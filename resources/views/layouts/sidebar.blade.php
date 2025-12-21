@@ -71,13 +71,14 @@
         @endphp
 
         @foreach ($menus as $menu)
+            {{-- level 1 --}}
             <li class="menu-item">
 
                 @if ($menu->children->count())
                     <button class="menu-btn" onclick="toggleMenu(this)">
                         {{ $menu->title }}
                     </button>
-
+                    {{-- level 2 --}}
                     <ul class="submenu">
                         @foreach ($menu->children as $child)
                             <li>
@@ -93,6 +94,8 @@
 
             </li>
         @endforeach
+
+
     </ul>
 </div>
 

@@ -7,5 +7,11 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // });
 
-Route::get('/', [MenuController::class, 'index']);
+Route::get('/', [MenuController::class, 'index'])->name('dashboard');
 Route::get('/add_menu', [MenuController::class, 'add_menu']);
+
+//for adding the menu route
+Route::post('/menucreate', [MenuController::class, 'storeMenu'])->name('storeMenu');
+
+//for get all the menu
+Route::get('/menu_list', [MenuController::class, 'getAllMenu'])->name('getAllMenu');
