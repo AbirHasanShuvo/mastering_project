@@ -8,3 +8,4 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::get('/', [MenuController::class, 'index']);
+Route::get('/add_menu', [MenuController::class, 'add_menu']);

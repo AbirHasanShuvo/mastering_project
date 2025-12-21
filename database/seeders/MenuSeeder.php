@@ -26,6 +26,17 @@ class MenuSeeder extends Seeder
             'order' => 2
         ]);
 
+        $menuss = Menus::create([
+            'title' => 'Menu',
+            'order' => 4,
+            'url' => '/menu'
+        ]);
+
+        Menus::create([
+            'title' => 'Add menu',
+            'url' => '/add_menu',
+            'parent_id' => $menuss->id
+        ]);
         Menus::create([
             'title' => 'Mobile',
             'url' => '/products/mobile',
