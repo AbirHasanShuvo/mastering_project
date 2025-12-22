@@ -48,8 +48,18 @@
                         </th>
 
                         <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                            Edit
+                        </th>
+
+                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                            Delete
+                        </th>
+
+                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">
                             Submenu
                         </th>
+
+
                     </tr>
                 </thead>
 
@@ -75,6 +85,36 @@
                                 {{ $res->is_active }}
                             </td>
 
+                            <td class="px-6 py-4">
+                                <a href=""
+                                    class="inline-flex items-center justify-center
+                                        w-20 h-9
+                                            text-sm font-medium text-white
+                                                 bg-green-600 rounded-md
+                                                        hover:bg-green-700
+                                                                    focus:outline-none focus:ring-2 focus:ring-green-500">
+                                    Edit
+                                </a>
+                            </td>
+
+                            <td>
+                                <a href=""
+                                    class="inline-flex items-center justify-center
+          w-20 h-9
+          text-sm font-medium text-white
+          bg-red-600 rounded-md
+          hover:bg-red-700">
+                                    Delete
+                                </a>
+
+                            </td>
+
+
+
+
+
+
+
                             <td class="px-6 py-4 text-blue-600">
                                 {{-- submenu start --}}
 
@@ -97,6 +137,15 @@
                                             Active Status
                                         </th>
 
+                                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                                            Edit
+                                        </th>
+
+                                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                                            Delete
+                                        </th>
+
+
 
                                     </thead>
                                     <tbody class="divide-y divide-gray-200">
@@ -114,6 +163,31 @@
                                                 <td class="px-6 py-4 text-blue-600">
                                                     {{ $res2->is_active }}
                                                 </td>
+
+                                                <td class="px-6 py-4">
+                                                    <a href=""
+                                                        class="inline-flex items-center justify-center
+                                        w-20 h-9
+                                            text-sm font-medium text-white
+                                                 bg-green-600 rounded-md
+                                                        hover:bg-green-700
+                                                                    focus:outline-none focus:ring-2 focus:ring-green-500">
+                                                        Edit
+                                                    </a>
+                                                </td>
+
+                                                <td>
+                                                    <a href=""
+                                                        class="inline-flex items-center justify-center
+          w-20 h-9
+          text-sm font-medium text-white
+          bg-red-600 rounded-md
+          hover:bg-red-700">
+                                                        Delete
+                                                    </a>
+
+                                                </td>
+
                                             </tr>
                                         @endforeach
 
