@@ -60,4 +60,29 @@ class MenuController extends Controller
             'currentMenu' => $currentMenu
         ]);
     }
+
+    public function updateMenu(Request $request)
+    {
+
+        $menu = Menus::find($request->id);
+
+        $menu->title = $request->title;
+        $menu->url = $request->url;
+        $menu->order = $request->order;
+        $menu->is_active = $request->is_active;
+        $menu->parent_id = $request->parent_id;
+
+        $menu->save();
+        //    $menu->order=
+
+    }
+
+    public function deleteMenu($id)
+    {
+        $menu = Menus::find($id);
+
+        $menu->delete();
+
+        return redirect()->route('getAllMenu');
+    }
 }

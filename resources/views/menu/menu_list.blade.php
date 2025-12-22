@@ -87,7 +87,7 @@
                             </td>
 
                             <td>
-                                <a href=""
+                                <a href="{{ route('deleteMenu', $res->id) }}"
                                     class="inline-flex items-center justify-center
           w-20 h-9
           text-sm font-medium text-white
@@ -166,7 +166,7 @@
                                                 </td>
 
                                                 <td>
-                                                    <a href=""
+                                                    <a href="{{ route('deleteMenu', $res2->id) }}"
                                                         class="inline-flex items-center justify-center w-20 h-9 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700">
                                                         Delete
                                                     </a>
