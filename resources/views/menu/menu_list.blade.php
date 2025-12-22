@@ -1,21 +1,4 @@
 @extends('master')
-{{--
-@section('content')
-    <h1>This is menu list</h1>
-    <table class="">
-        <thead>
-            <th>
-                Menu
-            </th>
-
-        </thead>
-        <tbody>
-            @foreach ($menus as $res)
-                <tr>{{ $res->title }}</tr>
-            @endforeach
-        </tbody>
-    </table>
-@endsection --}}
 
 
 @section('content')
@@ -29,6 +12,9 @@
             <table class="min-w-full border border-gray-200">
                 <thead class="bg-gray-100">
                     <tr>
+                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                            Id
+                        </th>
                         <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">
                             Title
                         </th>
@@ -67,6 +53,9 @@
                     @foreach ($menus as $res)
                         <tr class="hover:bg-gray-50">
                             <td class="px-6 py-4 text-gray-800">
+                                {{ $res->id }}
+                            </td>
+                            <td class="px-6 py-4 text-gray-800">
                                 {{ $res->title }}
                             </td>
 
@@ -86,7 +75,7 @@
                             </td>
 
                             <td class="px-6 py-4">
-                                <a href=""
+                                <a href="{{ route('editMenu', $res->id) }}"
                                     class="inline-flex items-center justify-center
                                         w-20 h-9
                                             text-sm font-medium text-white
@@ -165,7 +154,7 @@
                                                 </td>
 
                                                 <td class="px-6 py-4">
-                                                    <a href=""
+                                                    <a href="{{ route('editMenu', $res2->id) }}"
                                                         class="inline-flex items-center justify-center
                                         w-20 h-9
                                             text-sm font-medium text-white
@@ -178,11 +167,7 @@
 
                                                 <td>
                                                     <a href=""
-                                                        class="inline-flex items-center justify-center
-          w-20 h-9
-          text-sm font-medium text-white
-          bg-red-600 rounded-md
-          hover:bg-red-700">
+                                                        class="inline-flex items-center justify-center w-20 h-9 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700">
                                                         Delete
                                                     </a>
 

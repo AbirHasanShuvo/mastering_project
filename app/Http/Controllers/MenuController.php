@@ -48,4 +48,16 @@ class MenuController extends Controller
             'menus' => Menus::whereNull('parent_id')->get(['id', 'title', 'url', 'parent_id', 'order', 'is_active']),
         ]);
     }
+
+    public function editMenu($id)
+    {
+
+        $currentMenu = Menus::find($id);
+
+
+        return view(' menu.menu_edit', [
+            'menus' => Menus::get(['id', 'title'],),
+            'currentMenu' => $currentMenu
+        ]);
+    }
 }

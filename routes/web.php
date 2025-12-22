@@ -15,3 +15,5 @@ Route::post('/menucreate', [MenuController::class, 'storeMenu'])->name('storeMen
 
 //for get all the menu
 Route::get('/menu_list', [MenuController::class, 'getAllMenu'])->name('getAllMenu');
+
+Route::get('/menu_edit/{id}', [MenuController::class, 'editMenu'])->name('editMenu');
