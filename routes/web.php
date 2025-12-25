@@ -1,24 +1,37 @@
 <?php
 
-use App\Http\Controllers\MenuController;
+use App\Http\Controllers\CustomloginController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+Route::get('/', function () {
+    return redirect()->route('customLogin');
+});
 
-Route::get('/', [MenuController::class, 'index'])->name('dashboard');
-Route::get('/add_menu', [MenuController::class, 'add_menu']);
+require __DIR__ . '/auth.php';
 
-//for adding the menu route
-Route::post('/menucreate', [MenuController::class, 'storeMenu'])->name('storeMenu');
 
-//for get all the menu
-Route::get('/menu_list', [MenuController::class, 'getAllMenu'])->name('getAllMenu');
+//in the below this is custom login route
+Route::get('/customlogin', [CustomloginController::class, 'index'])->name('customLogin');
 
-//for editing the menu
-Route::get('/menu_edit/{id}', [MenuController::class, 'editMenu'])->name('editMenu');
-//for updating the menu
-Route::put('/menu_update', [MenuController::class, 'updateMenu'])->name('editedMenu');
-//for deleting the menu
-Route::get('/menu_delete/{id}', [MenuController::class, 'deleteMenu'])->name('deleteMenu');
+
+Route::get('/dummy_admin', function () {
+    return view('dummy_admin');
+})->name('dummyadmin');
+
+
+Route::get('/dummy_user', function () {
+    return view('dummy_user');
+})->name('dummyuser');
+
+
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});

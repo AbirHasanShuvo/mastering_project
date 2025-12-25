@@ -77,33 +77,18 @@
                             <td class="px-6 py-4">
                                 <a href="{{ route('editMenu', $res->id) }}"
                                     class="inline-flex items-center justify-center
-                                        w-20 h-9
-                                            text-sm font-medium text-white
-                                                 bg-green-600 rounded-md
-                                                        hover:bg-green-700
-                                                                    focus:outline-none focus:ring-2 focus:ring-green-500">
+                                        w-20 h-9 text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
                                     Edit
                                 </a>
                             </td>
 
                             <td>
                                 <a href="{{ route('deleteMenu', $res->id) }}"
-                                    class="inline-flex items-center justify-center
-          w-20 h-9
-          text-sm font-medium text-white
-          bg-red-600 rounded-md
-          hover:bg-red-700">
+                                    class="inline-flex items-center justify-center w-20 h-9 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700">
                                     Delete
                                 </a>
 
                             </td>
-
-
-
-
-
-
-
                             <td class="px-6 py-4 text-blue-600">
                                 {{-- submenu start --}}
 
