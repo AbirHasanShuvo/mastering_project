@@ -61,20 +61,37 @@ class MenuController extends Controller
         ]);
     }
 
-    public function updateMenu(Request $request)
+    // public function updateMenu(Request $request)
+    // {
+
+    //     $menu = Menus::find($request->id);
+
+    //     $menu->title = $request->title;
+    //     $menu->url = $request->url;
+    //     $menu->order = $request->order;
+    //     $menu->is_active = $request->is_active;
+    //     $menu->parent_id = $request->parent_id;
+
+    //     $menu->save();
+    //     //    $menu->order=
+
+    // }
+
+    //new update method
+
+    public function updateMenu(Request $request, $id)  // <--- include $id
     {
+        $menu = Menus::findOrFail($id);
 
-        $menu = Menus::find($request->id);
+        $menu->update([
+            'title' => $request->title,
+            'url' => $request->url,
+            'order' => $request->order,
+            'is_active' => $request->is_active ?? 0,
+            'parent_id' => $request->parent_id,
+        ]);
 
-        $menu->title = $request->title;
-        $menu->url = $request->url;
-        $menu->order = $request->order;
-        $menu->is_active = $request->is_active;
-        $menu->parent_id = $request->parent_id;
-
-        $menu->save();
-        //    $menu->order=
-
+        return redirect()->route('getAllMenu')->with('success', 'Menu updated successfully');
     }
 
     public function deleteMenu($id)

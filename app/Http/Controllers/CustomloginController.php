@@ -10,7 +10,7 @@ class CustomloginController extends Controller
     public function index()
     {
         if (Auth::check()) {
-            return Auth::user()->usertype == 'admin' ? redirect()->route('dummyadmin') : redirect()->route('dummyuser');
+            return Auth::user()->usertype == 'admin' ? redirect()->route('dashboard') : redirect()->route('dashboard');
         }
 
         return redirect()->route('login');

@@ -3,7 +3,11 @@
 @section('content')
     <div class="max-w-xl mx-auto mt-10 bg-white p-6 rounded shadow">
 
-        <form method="POST" action="{{ route('storeMenu') }}" enctype="multipart/form-data">
+        <form method="POST" action="
+
+        {{ route('storeMenu') }}
+
+            " enctype="multipart/form-data">
             @csrf
 
             <div class="space-y-4">

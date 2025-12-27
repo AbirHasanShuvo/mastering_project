@@ -32,8 +32,8 @@ class AuthenticatedSessionController extends Controller
 
         //my login is here
         return Auth::user()->usertype === 'admin'
-            ? redirect()->route('dummyadmin')
-            : redirect()->route('dummyuser');
+            ? redirect()->route('dashboard')
+            : redirect()->route('dashboard');
     }
 
     /**
