@@ -9,6 +9,7 @@ class CustomloginController extends Controller
 {
     public function index()
     {
+        
         if (Auth::check()) {
             return Auth::user()->usertype == 'admin' ? redirect()->route('dashboard') : redirect()->route('dashboard');
         }

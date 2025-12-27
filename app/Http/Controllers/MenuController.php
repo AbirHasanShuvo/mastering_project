@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Menus;
+use App\Models\Post;
 use Dotenv\Validator;
 use Illuminate\Http\Request;
 
@@ -10,9 +11,7 @@ class MenuController extends Controller
 {
     public function index()
     {
-        // $menus = Menus::whereNull('parent_id',)->where('is_active', 1)->orderby('order')->with('children')->get();
-
-        return view('dashboard');
+        //
     }
 
     public function add_menu()
@@ -61,21 +60,7 @@ class MenuController extends Controller
         ]);
     }
 
-    // public function updateMenu(Request $request)
-    // {
 
-    //     $menu = Menus::find($request->id);
-
-    //     $menu->title = $request->title;
-    //     $menu->url = $request->url;
-    //     $menu->order = $request->order;
-    //     $menu->is_active = $request->is_active;
-    //     $menu->parent_id = $request->parent_id;
-
-    //     $menu->save();
-    //     //    $menu->order=
-
-    // }
 
     //new update method
 

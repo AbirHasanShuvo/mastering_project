@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CustomloginController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -10,7 +11,6 @@ Route::get('/', function () {
 });
 
 require __DIR__ . '/auth.php';
-
 
 //in the below this is custom login route
 Route::get('/customlogin', [CustomloginController::class, 'index'])->name('customLogin');
@@ -32,24 +32,9 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+
     Route::get('/add_menu', [MenuController::class, 'add_menu'])
         ->name('menu.add');
-
-    Route::post('/add_menu', [MenuController::class, 'storeMenu'])->name('storeMenu');
-
-
-    // Route::get('/editMenu/{id}', [MenuController::class, 'editMenu'])
-    //     ->name('editMenu');
-
-    // Route::put('/editedMenu/{id}', [MenuController::class, 'updateMenu'])
-    //     ->name('editedMenu');
-
-    //updated
-
-
-
-
-    // Route::delete('/menu_delete/{id}', [MenuController::class, 'deleteMenu'])->name('deleteMenu');
 
     Route::get('/deleteMenu/{id}', [MenuController::class, 'deleteMenu'])->name('deleteMenu');
 
@@ -61,10 +46,15 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+//route which can access by anyone
+Route::get('/getpost', [PostController::class, 'index'])->name('getpost');
+Route::post('/createpost', [PostController::class, 'store'],)->name('createpost');
 
 //by role permission
 
 Route::middleware(['auth', 'verified', 'usertype:admin',])->prefix('admin')->group(function () {
+
+    Route::post('/add_menu', [MenuController::class, 'storeMenu'])->name('storeMenu');
     // show edit form
     Route::get('/editMenu/{id}', [MenuController::class, 'editMenu'])
         ->name('editMenu');
