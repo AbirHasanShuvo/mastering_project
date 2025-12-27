@@ -45,13 +45,7 @@ Route::middleware('auth')->group(function () {
     //     ->name('editedMenu');
 
     //updated
-    // show edit form
-    Route::get('/editMenu/{id}', [MenuController::class, 'editMenu'])
-        ->name('editMenu');
 
-    // update menu (PUT)
-    Route::put('/editedMenu/{id}', [MenuController::class, 'updateMenu'])
-        ->name('editedMenu');
 
 
 
@@ -65,4 +59,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+
+//by role permission
+
+Route::middleware(['auth', 'verified', 'usertype:admin',])->prefix('admin')->group(function () {
+    // show edit form
+    Route::get('/editMenu/{id}', [MenuController::class, 'editMenu'])
+        ->name('editMenu');
+
+    // update menu (PUT)
+    Route::put('/editedMenu/{id}', [MenuController::class, 'updateMenu'])
+        ->name('editedMenu');
 });
