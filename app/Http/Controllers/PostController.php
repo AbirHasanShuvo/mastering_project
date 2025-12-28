@@ -14,10 +14,10 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::where('is_published', 0)
+        $posts = Post::where('is_published', 1)
             ->latest()
             ->get();
-        return view('post.post', compact('posts'));
+        return view('post.postshow', compact('posts'));
     }
 
     /**
@@ -99,5 +99,16 @@ class PostController extends Controller
         $post->save();
 
         return back()->with('success', 'Post approved successfully');
+    }
+
+
+    public function approvingPosts()
+    {
+        // $posts = Post::where('is_published', 0)->get();
+        // return view('admin.approving_posts', compact('posts'));
+        $posts = Post::where('is_published', 0)
+            ->latest()
+            ->get();
+        return view('post.post', compact('posts'));
     }
 }

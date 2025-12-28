@@ -5,18 +5,7 @@
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
         <h1>Dashboard</h1>
 
-        <button onclick="openModal()"
-            style="
-                padding:10px 18px;
-                background:#2563eb;
-                color:#fff;
-                border:none;
-                border-radius:6px;
-                cursor:pointer;
-                font-weight:500;
-            ">
-            Add New Post
-        </button>
+        
 
         @auth
             @if (auth()->user()->usertype === 'admin')
@@ -38,7 +27,7 @@
 
     {{-- Posts List --}}
 
-   
+
 
 
     {{-- Modal --}}

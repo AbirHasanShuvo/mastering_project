@@ -2,114 +2,109 @@
 @section('content')
     <div style="max-width:900px; margin:auto;">
 
-        @php
+        {{-- @php
             $posts = \App\Models\Post::where('is_published', 1)->latest()->get();
-        @endphp
+        @endphp --}}
 
-        @forelse ($posts as $post)
-            <div
+        <div style="max-width:1000px; margin:auto;">
+
+            <table
                 style="
-            background:#ffffff;
-            border-radius:12px;
-            padding:20px;
-            margin-bottom:20px;
-            box-shadow:0 10px 25px rgba(0,0,0,0.06);
-            display:flex;
-            gap:20px;
-        ">
+        width:100%;
+        border-collapse:collapse;
+        background:#ffffff;
+        border-radius:12px;
+        overflow:hidden;
+        box-shadow:0 10px 25px rgba(0,0,0,0.06);
+    ">
+                <thead style="background:#f3f4f6;">
+                    <tr>
+                        <th style="padding:12px; text-align:left;">#</th>
+                        <th style="padding:12px; text-align:left;">Image</th>
+                        <th style="padding:12px; text-align:left;">Title</th>
+                        <th style="padding:12px; text-align:left;">Content</th>
+                        <th style="padding:12px; text-align:left;">Date</th>
+                        <th style="padding:12px; text-align:center;">Actions</th>
+                    </tr>
+                </thead>
 
-                {{-- Content --}}
-                <div style="flex:1;">
-                    <h3 style="margin:0 0 8px; font-size:20px; color:#111827;">
-                        {{ $post->title }}
-                    </h3>
+                <tbody>
+                    @forelse ($posts as $post)
+                        <tr style="border-top:1px solid #e5e7eb;">
+                            <td style="padding:12px;">{{ $loop->iteration }}</td>
 
-                    <small style="color:#6b7280;">
-                        {{ $post->created_at->format('d M Y') }}
-                    </small>
+                            <td style="padding:12px;">
+                                @if ($post->image)
+                                    <img src="{{ asset('storage/' . $post->image) }}"
+                                        style="width:70px; height:50px; object-fit:cover; border-radius:6px;">
+                                @else
+                                    <span style="color:#9ca3af;">No Image</span>
+                                @endif
+                            </td>
 
-                    @if ($post->image)
-                        <div style="margin:12px 0;">
-                            <img src="{{ asset('storage/' . $post->image) }}"
-                                style="
-                                width:100%;
-                                max-width:250px;
-                                height:200px;
-                                object-fit:cover;
-                                border-radius:10px;
-                            ">
-                        </div>
-                    @endif
+                            <td style="padding:12px; font-weight:500;">
+                                {{ $post->title }}
+                            </td>
 
-                    <p style="color:#374151; line-height:1.6; margin-top:10px;">
-                        {{ Str::limit($post->content, 180) }}
-                    </p>
-                </div>
+                            <td style="padding:12px; color:#374151;">
+                                {{ Str::limit($post->content, 60) }}
+                            </td>
 
-                {{-- Actions --}}
-                <div
-                    style="
-                display:flex;
-                flex-direction:column;
-                gap:10px;
-                justify-content:flex-start;
-            ">
-                    {{-- <a href=""
-                        style="
-                        padding:8px 14px;
-                        background:#fbbf24;
-                        color:#111827;
-                        text-decoration:none;
-                        border-radius:8px;
-                        font-weight:500;
-                        text-align:center;
-                    ">
-                        ✏️ Edit
-                    </a> --}}
+                            <td style="padding:12px; color:#6b7280;">
+                                {{ $post->created_at->format('d M Y') }}
+                            </td>
 
-                    <a href="javascript:void(0)"
-                        onclick="openEditModal(
-        {{ $post->id }},
-        '{{ addslashes($post->title) }}',
-        '{{ addslashes($post->content) }}',
-        '{{ $post->image ? asset('storage/' . $post->image) : '' }}'
-   )"
-                        style="
-        padding:8px 14px;
-        background:#fbbf24;
-        color:#111827;
-        text-decoration:none;
-        border-radius:8px;
-        font-weight:500;
-        text-align:center;
-   ">
-                        ✏️ Edit
-                    </a>
+                            <td style="padding:12px; text-align:center;">
+                                <div style="display:flex; gap:6px; justify-content:center;">
 
+                                    <a href="javascript:void(0)"
+                                        onclick="openEditModal(
+                                    {{ $post->id }},
+                                    '{{ addslashes($post->title) }}',
+                                    '{{ addslashes($post->content) }}',
+                                    '{{ $post->image ? asset('storage/' . $post->image) : '' }}'
+                                )"
+                                        style="
+                                    padding:6px 10px;
+                                    background:#fbbf24;
+                                    border-radius:6px;
+                                    text-decoration:none;
+                                    color:#111827;
+                                ">
+                                        ✏️
+                                    </a>
 
-                    <form action="" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit"
-                            style="
-                            padding:8px 14px;
-                            background:#ef4444;
-                            color:white;
-                            border:none;
-                            border-radius:8px;
-                            cursor:pointer;
-                            font-weight:500;
-                        "
-                            onclick="return confirm('Are you sure?')">
-                            🗑 Delete
-                        </button>
-                    </form>
-                </div>
+                                    <form action="" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" onclick="return confirm('Are you sure?')"
+                                            style="
+                                        padding:6px 10px;
+                                        background:#ef4444;
+                                        color:white;
+                                        border:none;
+                                        border-radius:6px;
+                                        cursor:pointer;
+                                    ">
+                                            🗑
+                                        </button>
+                                    </form>
 
-            </div>
-        @empty
-            <p style="text-align:center; color:#6b7280;">No posts found.</p>
-        @endforelse
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" style="padding:20px; text-align:center; color:#6b7280;">
+                                No posts found.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+
+        </div>
+
     </div>
 
 
