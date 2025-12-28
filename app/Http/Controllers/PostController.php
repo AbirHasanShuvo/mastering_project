@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use DataTables;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -12,8 +14,10 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::latest()->get(); // latest posts first
-        return view('dashboard', compact('posts'));
+        $posts = Post::where('is_published', 0)
+            ->latest()
+            ->get();
+        return view('post.post', compact('posts'));
     }
 
     /**
@@ -49,25 +53,35 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Post $post)
-    {
-        //
-    }
+    public function show(Post $post) {}
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Post $post)
-    {
-        //
-    }
+    public function edit(Post $post) {}
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Post $post)
     {
-        //
+        $data = $request->validate([
+            'title'   => 'required|string|max:255',
+            'content' => 'required|string',
+            'image'   => 'nullable|image|max:2048',
+        ]);
+
+        if ($request->hasFile('image')) {
+            if ($post->image && Storage::exists($post->image)) {
+                Storage::delete($post->image);
+            }
+
+            $data['image'] = $request->file('image')->store('posts');
+        }
+
+        $post->update($data);
+
+        return back()->with('success', 'Post updated successfully');
     }
 
     /**
@@ -76,5 +90,14 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         //
+    }
+
+    public function approve($id)
+    {
+        $post = Post::findOrFail($id);
+        $post->is_published = 1;
+        $post->save();
+
+        return back()->with('success', 'Post approved successfully');
     }
 }

@@ -17,101 +17,28 @@
             ">
             Add New Post
         </button>
+
+        @auth
+            @if (auth()->user()->usertype === 'admin')
+                <button onclick="window.location.href='{{ route('getAllPost') }}'"
+                    style="
+                padding:10px 18px;
+                background:#0fbd35;
+                color:#fff;
+                border:none;
+                border-radius:6px;
+                cursor:pointer;
+                font-weight:500;
+            ">
+                    Pending Posts
+                </button>
+            @endif
+        @endauth
     </div>
 
     {{-- Posts List --}}
 
-    <div style="max-width:900px; margin:auto;">
-
-        @php
-            $posts = \App\Models\Post::latest()->get();
-        @endphp
-
-        @forelse ($posts as $post)
-            <div
-                style="
-            background:#ffffff;
-            border-radius:12px;
-            padding:20px;
-            margin-bottom:20px;
-            box-shadow:0 10px 25px rgba(0,0,0,0.06);
-            display:flex;
-            gap:20px;
-        ">
-
-                {{-- Content --}}
-                <div style="flex:1;">
-                    <h3 style="margin:0 0 8px; font-size:20px; color:#111827;">
-                        {{ $post->title }}
-                    </h3>
-
-                    <small style="color:#6b7280;">
-                        {{ $post->created_at->format('d M Y') }}
-                    </small>
-
-                    @if ($post->image)
-                        <div style="margin:12px 0;">
-                            <img src="{{ asset('storage/' . $post->image) }}"
-                                style="
-                                width:100%;
-                                max-width:250px;
-                                height:200px;
-                                object-fit:cover;
-                                border-radius:10px;
-                            ">
-                        </div>
-                    @endif
-
-                    <p style="color:#374151; line-height:1.6; margin-top:10px;">
-                        {{ Str::limit($post->content, 180) }}
-                    </p>
-                </div>
-
-                {{-- Actions --}}
-                <div
-                    style="
-                display:flex;
-                flex-direction:column;
-                gap:10px;
-                justify-content:flex-start;
-            ">
-                    <a href=""
-                        style="
-                        padding:8px 14px;
-                        background:#fbbf24;
-                        color:#111827;
-                        text-decoration:none;
-                        border-radius:8px;
-                        font-weight:500;
-                        text-align:center;
-                    ">
-                        ✏️ Edit
-                    </a>
-
-                    <form action="" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit"
-                            style="
-                            padding:8px 14px;
-                            background:#ef4444;
-                            color:white;
-                            border:none;
-                            border-radius:8px;
-                            cursor:pointer;
-                            font-weight:500;
-                        "
-                            onclick="return confirm('Are you sure?')">
-                            🗑 Delete
-                        </button>
-                    </form>
-                </div>
-
-            </div>
-        @empty
-            <p style="text-align:center; color:#6b7280;">No posts found.</p>
-        @endforelse
-    </div>
+   
 
 
     {{-- Modal --}}

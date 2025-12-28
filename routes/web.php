@@ -16,14 +16,7 @@ require __DIR__ . '/auth.php';
 Route::get('/customlogin', [CustomloginController::class, 'index'])->name('customLogin');
 
 
-Route::get('/dummy_admin', function () {
-    return view('dummy_admin');
-})->name('dummyadmin');
 
-
-Route::get('/dummy_user', function () {
-    return view('dummy_user');
-})->name('dummyuser');
 
 
 
@@ -49,6 +42,17 @@ Route::middleware('auth')->group(function () {
 //route which can access by anyone
 Route::get('/getpost', [PostController::class, 'index'])->name('getpost');
 Route::post('/createpost', [PostController::class, 'store'],)->name('createpost');
+Route::get('/all_posts', function () {
+    return view('post.postshow');
+})->name('post.post');
+
+
+Route::get('/add_posts', function () {
+    return view('post.addpost');
+})->name('add_posts');
+
+
+
 
 //by role permission
 
@@ -59,7 +63,23 @@ Route::middleware(['auth', 'verified', 'usertype:admin',])->prefix('admin')->gro
     Route::get('/editMenu/{id}', [MenuController::class, 'editMenu'])
         ->name('editMenu');
 
+
     // update menu (PUT)
     Route::put('/editedMenu/{id}', [MenuController::class, 'updateMenu'])
         ->name('editedMenu');
+
+
+
+    //for approving posts
+    Route::get('/all_posts', [PostController::class, 'index'])->name('getAllPost');
+
+    //for editing posts
+    Route::get('/edit_post/{id}', [PostController::class, 'edit'])->name('editPost');
+
+    //update the post
+    Route::put('/edit_posts/{post}', [PostController::class, 'update'])->name('posts.update');
+
+
+
+    Route::put('/approve_post/{id}', [PostController::class, 'approve'])->name('posts.approve');
 });
