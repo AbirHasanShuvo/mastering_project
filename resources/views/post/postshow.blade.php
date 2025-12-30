@@ -1,191 +1,134 @@
 @extends('master')
+
 @section('content')
-    <div style="max-width:900px; margin:auto;">
+    <style>
+        /* ===== TABLE WRAPPER ===== */
+        .table-wrapper {
+            max-width: 1100px;
+            margin: 30px auto;
+            background: #ffffff;
+            border-radius: 14px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
 
-        {{-- @php
-            $posts = \App\Models\Post::where('is_published', 1)->latest()->get();
-        @endphp --}}
+        /* ===== TABLE ===== */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
 
-        <div style="max-width:1000px; margin:auto;">
+        /* ===== HEADER ===== */
+        .data-table thead th {
+            background: #f9fafb;
+            color: #374151;
+            font-weight: 600;
+            font-size: 14px;
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
 
-            <table
-                style="
-        width:100%;
-        border-collapse:collapse;
-        background:#ffffff;
-        border-radius:12px;
-        overflow:hidden;
-        box-shadow:0 10px 25px rgba(0,0,0,0.06);
-    ">
-                <thead style="background:#f3f4f6;">
-                    <tr>
-                        <th style="padding:12px; text-align:left;">#</th>
-                        <th style="padding:12px; text-align:left;">Image</th>
-                        <th style="padding:12px; text-align:left;">Title</th>
-                        <th style="padding:12px; text-align:left;">Content</th>
-                        <th style="padding:12px; text-align:left;">Date</th>
-                        <th style="padding:12px; text-align:center;">Actions</th>
-                    </tr>
-                </thead>
+        /* ===== BODY ===== */
+        .data-table tbody td {
+            padding: 14px 16px;
+            font-size: 14px;
+            color: #374151;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
 
-                <tbody>
-                    @forelse ($posts as $post)
-                        <tr style="border-top:1px solid #e5e7eb;">
-                            <td style="padding:12px;">{{ $loop->iteration }}</td>
+        /* ===== ZEBRA ===== */
+        .data-table tbody tr:nth-child(even) {
+            background: #fafafa;
+        }
 
-                            <td style="padding:12px;">
-                                @if ($post->image)
-                                    <img src="{{ asset('storage/' . $post->image) }}"
-                                        style="width:70px; height:50px; object-fit:cover; border-radius:6px;">
-                                @else
-                                    <span style="color:#9ca3af;">No Image</span>
-                                @endif
-                            </td>
+        /* ===== HOVER ===== */
+        .data-table tbody tr:hover {
+            background: #f0f9ff;
+            transition: background 0.2s ease;
+        }
 
-                            <td style="padding:12px; font-weight:500;">
-                                {{ $post->title }}
-                            </td>
+        /* ===== IMAGE ===== */
+        .table-img {
+            width: 70px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+        }
 
-                            <td style="padding:12px; color:#374151;">
-                                {{ Str::limit($post->content, 60) }}
-                            </td>
+        .no-image {
+            font-size: 12px;
+            color: #9ca3af;
+        }
 
-                            <td style="padding:12px; color:#6b7280;">
-                                {{ $post->created_at->format('d M Y') }}
-                            </td>
+        /* ===== DATATABLE CONTROLS ===== */
+        .dataTables_wrapper {
+            padding: 15px;
+        }
 
-                            <td style="padding:12px; text-align:center;">
-                                <div style="display:flex; gap:6px; justify-content:center;">
+        .dataTables_wrapper .dataTables_filter input,
+        .dataTables_wrapper .dataTables_length select {
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            padding: 6px 10px;
+            outline: none;
+        }
 
-                                    <a href="javascript:void(0)"
-                                        onclick="openEditModal(
-                                    {{ $post->id }},
-                                    '{{ addslashes($post->title) }}',
-                                    '{{ addslashes($post->content) }}',
-                                    '{{ $post->image ? asset('storage/' . $post->image) : '' }}'
-                                )"
-                                        style="
-                                    padding:6px 10px;
-                                    background:#fbbf24;
-                                    border-radius:6px;
-                                    text-decoration:none;
-                                    color:#111827;
-                                ">
-                                        ✏️
-                                    </a>
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            border-radius: 8px !important;
+        }
+    </style>
 
-                                    <form action="" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" onclick="return confirm('Are you sure?')"
-                                            style="
-                                        padding:6px 10px;
-                                        background:#ef4444;
-                                        color:white;
-                                        border:none;
-                                        border-radius:6px;
-                                        cursor:pointer;
-                                    ">
-                                            🗑
-                                        </button>
-                                    </form>
-
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6" style="padding:20px; text-align:center; color:#6b7280;">
-                                No posts found.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-
-        </div>
-
+    <div class="table-wrapper">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th style="width:60px;">ID</th>
+                    <th>Title</th>
+                    <th>Content</th>
+                    <th style="width:120px;">Image</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
     </div>
 
-
-
-
-
-    <div id="editModal"
-        style="
-        display:none;
-        position:fixed;
-        inset:0;
-        background:rgba(0,0,0,0.4);
-        justify-content:center;
-        align-items:center;
-        z-index:999;
-     ">
-
-        <div style="
-        background:#fff;
-        width:500px;
-        border-radius:12px;
-        padding:20px;
-    ">
-            <h3 style="margin-bottom:15px;">Edit Post</h3>
-
-            <form id="editForm" method="POST" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
-
-                {{-- Title --}}
-                <input type="text" name="title" id="editTitle" style="width:100%; padding:10px; margin-bottom:10px;"
-                    placeholder="Title">
-
-                {{-- Content --}}
-                <textarea name="content" id="editContent" style="width:100%; padding:10px; height:120px; margin-bottom:10px;"
-                    placeholder="Content"></textarea>
-
-                {{-- Current Image Preview --}}
-                <div id="imagePreviewBox" style="margin-bottom:10px; display:none;">
-                    <img id="editImagePreview" style="width:100%; max-height:180px; object-fit:cover; border-radius:8px;">
-                </div>
-
-                {{-- Update Image --}}
-                <input type="file" name="image" accept="image/*" style="margin-bottom:15px;">
-
-                <div style="display:flex; gap:10px; justify-content:flex-end;">
-                    <button type="button" onclick="closeEditModal()" style="padding:8px 14px;">
-                        Cancel
-                    </button>
-
-                    <button type="submit" style="padding:8px 14px; background:#2563eb; color:white; border:none;">
-                        Update
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
+    {{-- ===== DATATABLE SCRIPT ===== --}}
     <script>
-        function openEditModal(id, title, content, imageUrl) {
-            document.getElementById('editModal').style.display = 'flex';
-
-            document.getElementById('editTitle').value = title;
-            document.getElementById('editContent').value = content;
-
-            const previewBox = document.getElementById('imagePreviewBox');
-            const previewImg = document.getElementById('editImagePreview');
-
-            if (imageUrl) {
-                previewBox.style.display = 'block';
-                previewImg.src = imageUrl;
-            } else {
-                previewBox.style.display = 'none';
-                previewImg.src = '';
-            }
-
-            document.getElementById('editForm').action = `/posts/${id}`;
-        }
-
-        function closeEditModal() {
-            document.getElementById('editModal').style.display = 'none';
-        }
+        $(function() {
+            $('.data-table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('post.post') }}",
+                columns: [{
+                        data: 'id',
+                        name: 'id'
+                    },
+                    {
+                        data: 'title',
+                        name: 'title'
+                    },
+                    {
+                        data: 'content',
+                        name: 'content',
+                        render: function(data) {
+                            return data.length > 80 ? data.substr(0, 80) + '...' : data;
+                        }
+                    },
+                    {
+                        data: 'image',
+                        name: 'image',
+                        orderable: false,
+                        searchable: false
+                    }
+                ]
+            });
+        });
     </script>
 @endsection

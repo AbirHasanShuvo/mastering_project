@@ -1,4 +1,5 @@
 <?php
+
 use App\Http\Controllers\CustomloginController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PostController;

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use DataTables;
+use Yajra\DataTables\DataTables;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -12,13 +12,39 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $r)
     {
-        $posts = Post::where('is_published', 1)
-            ->latest()
-            ->get();
-        return view('post.postshow', compact('posts'));
+        // $posts = Post::where('is_published', 1)
+        //     ->latest()
+        //     ->get();
+        // return view('post.postshow', compact('posts'));
+
+        //for the ajax
+
+        if ($r->ajax()) {
+            $data = Post::where('is_published', 1);
+
+            // return DataTables::of($data)
+            //     ->addIndexColumn()
+            //     ->make(true);
+
+            return DataTables::of($data)
+                ->addColumn('image', function ($post) {
+                    if ($post->image) {
+                        return '<img src="' . asset('storage/' . $post->image) . '"
+                     style="width:70px; height:50px; object-fit:cover; border-radius:6px;">';
+                    }
+                    return '<span style="color:#9ca3af;">No Image</span>';
+                })
+                ->rawColumns(['image']) // 🔴 VERY IMPORTANT
+                ->make(true);
+        }
+
+
+        return view('post.postshow');
     }
+
+
 
     /**
      * Show the form for creating a new resource.
