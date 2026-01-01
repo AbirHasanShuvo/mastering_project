@@ -86,9 +86,17 @@
 @extends('master')
 
 @section('content')
+
+{{-- for the modal and the button is here --}}
+
+
+
+
     <div class="max-w-xl mx-auto mt-10 bg-white p-6 rounded shadow">
 
         <h2 class="text-xl font-semibold mb-6">Add New Post</h2>
+
+        
 
         <form method="POST" action="{{ route('createpost') }}" enctype="multipart/form-data">
             @csrf

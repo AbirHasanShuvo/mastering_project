@@ -22,7 +22,8 @@ class PostController extends Controller
         //for the ajax
 
         if ($r->ajax()) {
-            $data = Post::where('is_published', 1);
+            // $data = Post::where('is_published', 1);
+            $data = Post::all();
 
             // return DataTables::of($data)
             //     ->addIndexColumn()
@@ -36,7 +37,7 @@ class PostController extends Controller
                     }
                     return '<span style="color:#9ca3af;">No Image</span>';
                 })
-                ->rawColumns(['image']) // 🔴 VERY IMPORTANT
+                ->rawColumns(['image'])
                 ->make(true);
         }
 
