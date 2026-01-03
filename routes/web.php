@@ -60,7 +60,9 @@ Route::middleware(['auth', 'verified', 'usertype:admin',])->prefix('admin')->gro
     //for approving posts
     Route::get('/post/index', [PostController::class, 'index'])->name('getAllPost');
 
-    Route::get('/edit_post/{id}', [PostController::class, 'edit'])->name('editPost');
+    // Route::get('/edit_post/{id}', [PostController::class, 'edit'])->name('editPost');
+    Route::get('/posts/{id}', [PostController::class, 'edit'])->name('posts.edit');
+
     //in the below they are not working
     Route::put('/edit_posts/{post}', [PostController::class, 'update'])->name('posts.update');
     Route::put('/approve_post/{id}', [PostController::class, 'approve'])->name('posts.approve');

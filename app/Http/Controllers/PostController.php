@@ -25,20 +25,77 @@ class PostController extends Controller
             // $data = Post::where('is_published', 1);
             $data = Post::all();
 
-            // return DataTables::of($data)
-            //     ->addIndexColumn()
-            //     ->make(true);
+
 
             return DataTables::of($data)
+                ->addIndexColumn()
+                ->editColumn('title', function ($post) {
+                    return '<strong id="getTitle">' . htmlspecialchars($post->title) . '</strong>';
+                })
+                ->editColumn('content', function ($post) {
+                    return '<p id="getContent">' . htmlspecialchars($post->content) . '</p>';
+                })
+
+
                 ->addColumn('image', function ($post) {
-                    if ($post->image) {
+                    if (
+                        $post->image && Storage::disk('public')->exists($post->image)
+                    ) {
                         return '<img src="' . asset('storage/' . $post->image) . '"
                      style="width:70px; height:50px; object-fit:cover; border-radius:6px;">';
                     }
                     return '<span style="color:#9ca3af;">No Image</span>';
                 })
-                ->rawColumns(['image'])
+
+                // ->addColumn('action', function ($post) {
+                //     return '
+                //     <div style="display:flex; gap:6px;">
+                //         <button
+                //             onclick=" openEditModal()"
+                //             style="padding:6px 10px; background:#f59e0b; color:#fff; border:none; border-radius:5px;">
+                //             Edit
+                //         </button>
+
+                //         <form action="' . '" method="POST" onsubmit="return confirm(\'Are you sure?\')">
+                //             ' . csrf_field() . method_field('DELETE') . '
+                //             <button
+                //                 type="submit"
+                //                 style="padding:6px 10px; background:#ef4444; color:#fff; border:none; border-radius:5px;">
+                //                 Delete
+                //             </button>
+                //         </form>
+                //     </div>
+                // ';
+                // })
+
+                //new action column
+
+                ->addColumn('action', function ($post) {
+                    return '
+                        <button
+                            onclick="openEditModal($(this))"
+                            style="padding:6px 10px; background:#f59e0b; color:#fff; border:none; border-radius:5px;" data-link="' . route('posts.edit', $post->id) . '">
+                            Edit
+                        </button>
+
+                        <button
+                                onclick="deletePost(' . $post->id . ')"
+                                style="padding:6px 10px; background:#dc2626; color:#fff; border:none; border-radius:5px;">
+                                Delete
+                            </button>
+                        ';
+                })
+
+
+
+
+
+
+
+                ->rawColumns(['title', 'content', 'image', 'action'])
                 ->make(true);
+
+            //. route('posts.destroy', $post->id)
         }
 
 
@@ -85,11 +142,36 @@ class PostController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Post $post) {}
+    public function edit($id)
+    {
+        $post = Post::findorfail($id);
+        return view('post.editpost', compact('post'));
+    }
 
     /**
      * Update the specified resource in storage.
      */
+    // public function update(Request $request, Post $post)
+    // {
+    //     $data = $request->validate([
+    //         'title'   => 'required|string|max:255',
+    //         'content' => 'required|string',
+    //         'image'   => 'nullable|image|max:2048',
+    //     ]);
+
+    //     if ($request->hasFile('image')) {
+    //         if ($post->image && Storage::exists($post->image)) {
+    //             Storage::delete($post->image);
+    //         }
+
+    //         $data['image'] = $request->file('image')->store('posts');
+    //     }
+
+    //     $post->update($data);
+
+    //     return back()->with('success', 'Post updated successfully');
+    // }
+
     public function update(Request $request, Post $post)
     {
         $data = $request->validate([
@@ -99,17 +181,21 @@ class PostController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            if ($post->image && Storage::exists($post->image)) {
-                Storage::delete($post->image);
+
+            // delete old image (from public disk)
+            if ($post->image && Storage::disk('public')->exists($post->image)) {
+                Storage::disk('public')->delete($post->image);
             }
 
-            $data['image'] = $request->file('image')->store('posts');
+            // save new image (public disk)
+            $data['image'] = $request->file('image')->store('posts', 'public');
         }
 
         $post->update($data);
 
         return back()->with('success', 'Post updated successfully');
     }
+
 
     /**
      * Remove the specified resource from storage.

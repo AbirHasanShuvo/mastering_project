@@ -10,7 +10,7 @@
         justify-content:flex-end;
         align-items:center;
     ">
-        <button onclick="openModal()"
+        <button onclick="openCreateModal()"
             style="
             padding:10px 18px;
             background:#2563eb;
@@ -26,8 +26,7 @@
 
 
 
-
-    <div id="postModal"
+    <div id="createModal"
         style="
             display:none;
             position:fixed;
@@ -51,25 +50,7 @@
             ">
             <h3>Add New Post</h3>
 
-            {{-- <form action="{{ route('createpost') }}" method="POST" enctype="multipart/form-data">
-                @csrf
 
-                <input type="text" name="title" placeholder="Post title" required
-                    style="width:100%; padding:8px; margin-bottom:10px;">
-
-                <textarea name="content" placeholder="Post content" required
-                    style="width:100%; padding:8px; height:100px; margin-bottom:10px;"></textarea>
-
-                <input type="file" name="image" accept="image/*" style="width:100%; margin-bottom:10px;">
-
-                <div style="text-align:right; margin-top:15px;">
-                    <button type="button" onclick="closeModal()">Cancel</button>
-                    <button type="submit"
-                        style="background:#2563eb; color:#fff; border:none; padding:8px 14px; border-radius:5px;">
-                        Save
-                    </button>
-                </div>
-            </form> --}}
 
             <form action="{{ route('createpost') }}" method="POST" enctype="multipart/form-data">
                 @csrf
@@ -120,7 +101,7 @@
             font-size:14px;
         " />
 
-                
+
 
                 <div style="display:flex; justify-content:flex-end; gap:10px;">
                     <!-- Submit button (left position) -->
@@ -138,7 +119,7 @@
                     </button>
 
                     <!-- Cancel button (right position) -->
-                    <button type="button" onclick="closeModal()"
+                    <button type="button" onclick="closeCreateModal()"
                         style="
             padding:8px 14px;
             background:#f3f4f6;
@@ -153,22 +134,108 @@
             </form>
 
 
-            <span onclick="closeModal()" style="position:absolute; top:10px; right:15px; cursor:pointer; font-size:18px;">
+            <span onclick="closeCreateModal()"
+                style="position:absolute; top:10px; right:15px; cursor:pointer; font-size:18px;">
                 &times;
             </span>
         </div>
     </div>
 
 
-    <script>
-        function openModal() {
-            document.getElementById('postModal').style.display = 'flex';
+    {{-- this is for the edit modal --}}
+
+    <div id="editModal"
+        style="
+            display:none;
+            position:fixed;
+            top:0;
+            left:0;
+            width:100%;
+            height:100%;
+            background:rgba(0,0,0,0.6);
+            justify-content:center;
+            align-items:center;
+            z-index:1000;
+        ">
+
+        <div
+            style="
+                background:#fff;
+                padding:30px;
+                width:600px;
+                max-width:90%;
+                border-radius:10px;
+                position:relative;
+            ">
+            <h3>Edit Your Post</h3>
+            <div class="modal-body" id="modal-body">
+
+            </div>
+            <span onclick="closeEditModal()"
+                style="position:absolute; top:10px; right:15px; cursor:pointer; font-size:18px;">
+                &times;
+            </span>
+        </div>
+    </div>
+
+
+    {{-- <script>
+        function openCreateModal() {
+            document.getElementById('createModal').style.display = 'flex';
         }
 
-        function closeModal() {
-            document.getElementById('postModal').style.display = 'none';
+        function closeCreateModal() {
+            document.getElementById('createModal').style.display = 'none';
+        }
+
+        function openEditModal() {
+            document.getElementById('editModal').style.display = 'flex';
+
+
+            const title = document.getElementById('getTitle').innerText;
+            $('#setTitle').val(title);
+
+            //for the content
+            const content = document.getElementById('getContent').innerText;
+            $('#setContent').val(content)
+
+            //for the image
+            const imageSrc = document.getElementById('getImage').src;
+            console.log(imageSrc);
+            $('#setImage').val(imageSrc)
+
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+    </script> --}}
+
+    {{-- edited javascript --}}
+
+    <script>
+        function openCreateModal() {
+            document.getElementById('createModal').style.display = 'flex';
+        }
+
+        function closeCreateModal() {mm
+            document.getElementById('createModal').style.display = 'none';
+        }
+
+        function openEditModal(element) {
+            console.log(element.data('link'));
+            document.getElementById('editModal').style.display = 'flex';
+            $('#editModal #modal-body').load(element.data('link'));
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
         }
     </script>
+
+
+
+
     <style>
         .table-wrapper {
             max-width: 1100px;
@@ -253,6 +320,7 @@
                     <th>Title</th>
                     <th>Content</th>
                     <th style="width:120px;">Image</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -283,6 +351,13 @@
                     {
                         data: 'image',
                         name: 'image',
+                        orderable: false,
+                        searchable: false
+                    },
+
+                    {
+                        data: 'action',
+                        name: 'action',
                         orderable: false,
                         searchable: false
                     }
