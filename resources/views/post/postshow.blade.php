@@ -218,7 +218,8 @@
             document.getElementById('createModal').style.display = 'flex';
         }
 
-        function closeCreateModal() {mm
+        function closeCreateModal() {
+            mm
             document.getElementById('createModal').style.display = 'none';
         }
 
@@ -364,5 +365,28 @@
                 ]
             });
         });
+    </script>
+
+    <script>
+        function deletePost(id) {
+            if (!confirm('Are you sure you want to delete this post?')) {
+                return;
+            }
+
+            $.ajax({
+                url: "{{ url('admin/delete_post') }}/" + id,
+                type: "DELETE",
+                data: {
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function(response) {
+                    alert(response.success);
+                    $('.data-table').DataTable().ajax.reload(null, false);
+                },
+                error: function(xhr) {
+                    alert('Something went wrong!');
+                }
+            });
+        }
     </script>
 @endsection

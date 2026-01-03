@@ -47,27 +47,7 @@ class PostController extends Controller
                     return '<span style="color:#9ca3af;">No Image</span>';
                 })
 
-                // ->addColumn('action', function ($post) {
-                //     return '
-                //     <div style="display:flex; gap:6px;">
-                //         <button
-                //             onclick=" openEditModal()"
-                //             style="padding:6px 10px; background:#f59e0b; color:#fff; border:none; border-radius:5px;">
-                //             Edit
-                //         </button>
-
-                //         <form action="' . '" method="POST" onsubmit="return confirm(\'Are you sure?\')">
-                //             ' . csrf_field() . method_field('DELETE') . '
-                //             <button
-                //                 type="submit"
-                //                 style="padding:6px 10px; background:#ef4444; color:#fff; border:none; border-radius:5px;">
-                //                 Delete
-                //             </button>
-                //         </form>
-                //     </div>
-                // ';
-                // })
-
+                
                 //new action column
 
                 ->addColumn('action', function ($post) {
@@ -202,7 +182,14 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        // Delete image from storage
+        if ($post->image && Storage::disk('public')->exists($post->image)) {
+            Storage::disk('public')->delete($post->image);
+        }
+
+        $post->delete();
+
+        return response()->json(['success' => 'Post deleted successfully']);
     }
 
     public function approve($id)

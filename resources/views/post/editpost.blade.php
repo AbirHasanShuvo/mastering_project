@@ -82,7 +82,7 @@
         </button>
 
         <!-- Cancel button (right position) -->
-        <button type="button" onclick="closeCreateModal()"
+        <button type="button" onclick="closeEditModal()"
             style="
             padding:8px 14px;
             background:#f3f4f6;

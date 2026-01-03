@@ -65,5 +65,9 @@ Route::middleware(['auth', 'verified', 'usertype:admin',])->prefix('admin')->gro
 
     //in the below they are not working
     Route::put('/edit_posts/{post}', [PostController::class, 'update'])->name('posts.update');
+    // Route::delete('/delete_post/{id}', [PostController::class, 'destroy'])->name('posts.destroy');
+    Route::delete('/delete_post/{post}', [PostController::class, 'destroy'])
+    ->name('posts.destroy');
+
     Route::put('/approve_post/{id}', [PostController::class, 'approve'])->name('posts.approve');
 });
