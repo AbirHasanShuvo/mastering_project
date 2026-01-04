@@ -179,39 +179,7 @@
     </div>
 
 
-    {{-- <script>
-        function openCreateModal() {
-            document.getElementById('createModal').style.display = 'flex';
-        }
 
-        function closeCreateModal() {
-            document.getElementById('createModal').style.display = 'none';
-        }
-
-        function openEditModal() {
-            document.getElementById('editModal').style.display = 'flex';
-
-
-            const title = document.getElementById('getTitle').innerText;
-            $('#setTitle').val(title);
-
-            //for the content
-            const content = document.getElementById('getContent').innerText;
-            $('#setContent').val(content)
-
-            //for the image
-            const imageSrc = document.getElementById('getImage').src;
-            console.log(imageSrc);
-            $('#setImage').val(imageSrc)
-
-        }
-
-        function closeEditModal() {
-            document.getElementById('editModal').style.display = 'none';
-        }
-    </script> --}}
-
-    {{-- edited javascript --}}
 
     <script>
         function openCreateModal() {
@@ -321,6 +289,8 @@
                     <th>Title</th>
                     <th>Content</th>
                     <th style="width:120px;">Image</th>
+                    <th>Publish</th>
+                    {{-- <th>Approving</th> --}}
                     <th>Action</th>
                 </tr>
             </thead>
@@ -357,11 +327,25 @@
                     },
 
                     {
+                        data: 'is_published',
+                        name: 'is_published'
+                    },
+
+                    // {
+                    //     data: 'is_approved',
+                    //     name: 'is_approved'
+                    // },
+
+
+
+
+                    {
                         data: 'action',
                         name: 'action',
                         orderable: false,
                         searchable: false
-                    }
+                    },
+
                 ]
             });
         });
@@ -387,6 +371,35 @@
                     alert('Something went wrong!');
                 }
             });
+        }
+    </script>
+
+
+    {{-- here for the javascript --}}
+
+    <script>
+        function togglePublish(el, id) {
+            const knob = el.nextElementSibling.querySelector('span');
+
+            knob.style.transform = el.checked ? 'translateX(22px)' : 'translateX(0)';
+
+            fetch(`/admin/posts/toggle-publish/${id}`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(() => {
+                    $('.data-table').DataTable().ajax.reload(null, false);
+
+                    // alert('Post publish status updated successfully');
+                })
+                .catch(() => {
+                    el.checked = !el.checked;
+                    knob.style.transform = el.checked ? 'translateX(22px)' : 'translateX(0)';
+                    alert('Failed to update');
+                });
         }
     </script>
 @endsection

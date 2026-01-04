@@ -9,24 +9,20 @@ use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index(Request $r)
     {
-        // $posts = Post::where('is_published', 1)
-        //     ->latest()
-        //     ->get();
-        // return view('post.postshow', compact('posts'));
-
-        //for the ajax
-
         if ($r->ajax()) {
-            // $data = Post::where('is_published', 1);
-            $data = Post::all();
 
+            // $data = Post::all();
 
+            // base query
+            $data = Post::query();
 
+            // if NOT admin tjen it will show only published posts
+            if (!auth()->check() || auth()->user()->usertype !== 'admin') {
+                $data->where('is_published', 1);
+            }
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->editColumn('title', function ($post) {
@@ -47,7 +43,7 @@ class PostController extends Controller
                     return '<span style="color:#9ca3af;">No Image</span>';
                 })
 
-                
+
                 //new action column
 
                 ->addColumn('action', function ($post) {
@@ -66,13 +62,47 @@ class PostController extends Controller
                         ';
                 })
 
+                // ->editColumn('is_published', function ($post) {
+                //     return $post->is_published
+                //         ? '<span style="color:green; font-weight:bold;">Published</span>'
+                //         : '<span style="color:red; font-weight:bold;">Pending</span>';
+                // })
 
+                ->editColumn('is_published', function ($post) {
+                    $checked   = $post->is_published ? 'checked' : '';
+                    $translate = $post->is_published ? 'translateX(22px)' : 'translateX(0)';
 
+                    $bg = $post->is_published ? 'blue' : '#ccc';
 
-
-
-
-                ->rawColumns(['title', 'content', 'image', 'action'])
+                    return '
+                    <label style="position:relative; display:inline-block; width:46px; height:24px; cursor:pointer;">
+                    <input type="checkbox"
+                    ' . $checked . '
+                    onchange="togglePublish(this, ' . $post->id . ')"
+                    style="opacity:0; width:0; height:0;">
+                    <span style="
+                    position:absolute;
+                    inset:0;
+                    background:' . $bg . ';
+                    border-radius:24px;
+                    transition:.3s;
+                    ">
+                    <span style="
+                    position:absolute;
+                    height:18px;
+                    width:18px;
+                    left:3px;
+                    bottom:3px;
+                    background:#fff;
+                    border-radius:50%;
+                    transition:.3s;
+                    transform: ' . $translate . ';
+                "></span>
+            </span>
+        </label>
+    ';
+                })
+                ->rawColumns(['title', 'content', 'image', 'action', 'is_published',])
                 ->make(true);
 
             //. route('posts.destroy', $post->id)
@@ -210,5 +240,15 @@ class PostController extends Controller
             ->latest()
             ->get();
         return view('post.post', compact('posts'));
+    }
+
+
+    public function togglePublish($id)
+    {
+        $post = Post::findOrFail($id);
+        $post->is_published = !$post->is_published;
+        $post->save();
+
+        return response()->json(['status' => 'success']);
     }
 }
