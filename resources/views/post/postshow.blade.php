@@ -2,6 +2,7 @@
 
 @section('content')
     <!-- Header -->
+
     <div
         style="
         max-width:1100px;
@@ -10,6 +11,21 @@
         justify-content:flex-end;
         align-items:center;
     ">
+
+   <a href = {{ asset('demo/demo.csv') }}
+    style="
+        padding:10px 18px;
+        background:#facc15; /* yellow */
+        color:#fff;
+        border:none;
+        border-radius:6px;
+        cursor:pointer;
+        font-weight:500;
+        margin-right:12px;
+    ">
+    Demo CSV
+</a>
+
         <button onclick="openCreateModal()"
             style="
             padding:10px 18px;
@@ -21,6 +37,58 @@
             font-weight:500;
         ">
             Add New Post
+        </button>
+
+         
+    </div>
+
+    <div
+        style="
+        max-width:1100px;
+        margin: 0 auto 20px;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        padding:10px 15px;
+        background:#f3f4f6;
+        border-radius:8px;
+        gap:10px;
+        flex-wrap:wrap;
+    ">
+
+        <!-- Left filters -->
+        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+        <!-- Publish Dropdown -->
+            <select id="filterPublish" style="padding:6px 12px; border-radius:5px; border:1px solid #d1d5db;">
+                <option value="">All</option>
+                <option value="1">Published</option>
+                <option value="0">Pending</option>
+            </select>
+        <!-- From Date -->
+            <input type="date" id="filterFrom" value="{{ date('Y-m-01') }}"
+                style="padding:6px 12px; border-radius:5px; border:1px solid #d1d5db;">
+
+            <!-- To Date -->
+            <input type="date" id="filterTo" value="{{ date('Y-m-t') }}"
+                style="padding:6px 12px; border-radius:5px; border:1px solid #d1d5db;">
+        </div>
+
+        <!-- Right Search Button -->
+        <button id="filterSearch"
+            style="
+
+
+        padding:8px 14px;
+        background:#2563eb;
+        color:#fff;
+        border:none;
+        border-radius:6px;
+        cursor:pointer;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+    ">
+            🔍 Search
         </button>
     </div>
 
@@ -187,7 +255,7 @@
         }
 
         function closeCreateModal() {
-            mm
+
             document.getElementById('createModal').style.display = 'none';
         }
 
@@ -378,11 +446,41 @@
     {{-- here for the javascript --}}
 
     <script>
-        function togglePublish(el, id) {
-            const knob = el.nextElementSibling.querySelector('span');
+        // function togglePublish(el, id) {
+        //     const knob = el.nextElementSibling.querySelector('span');
 
+        //     knob.style.transform = el.checked ? 'translateX(22px)' : 'translateX(0)';
+
+        //     fetch(`/admin/posts/toggle-publish/${id}`, {
+        //             method: 'POST',
+        //             headers: {
+        //                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
+        //                 'Accept': 'application/json'
+        //             }
+        //         })
+        //         .then(() => {
+        //             $('.data-table').DataTable().ajax.reload(null, false);
+
+        //             // alert('Post publish status updated successfully');
+        //         })
+        //         .catch(() => {
+        //             el.checked = !el.checked;
+        //             knob.style.transform = el.checked ? 'translateX(22px)' : 'translateX(0)';
+        //             alert('Failed to update');
+        //         });
+        // }
+
+        function togglePublish(el, id) {
+            const track = el.nextElementSibling; // the outer span (track)
+            const knob = track.querySelector('span');
+
+            // Update knob position
             knob.style.transform = el.checked ? 'translateX(22px)' : 'translateX(0)';
 
+            // Update background color immediately
+            track.style.background = el.checked ? 'blue' : '#ccc';
+
+            // Send AJAX request
             fetch(`/admin/posts/toggle-publish/${id}`, {
                     method: 'POST',
                     headers: {
@@ -391,15 +489,31 @@
                     }
                 })
                 .then(() => {
-                    $('.data-table').DataTable().ajax.reload(null, false);
-
+                    // Optionally show a message
                     // alert('Post publish status updated successfully');
                 })
                 .catch(() => {
+                    // rollback if failed
                     el.checked = !el.checked;
                     knob.style.transform = el.checked ? 'translateX(22px)' : 'translateX(0)';
+                    track.style.background = el.checked ? 'blue' : '#ccc';
                     alert('Failed to update');
                 });
         }
+    </script>
+
+    {{-- script for the bar  --}}
+
+    <script>
+        // Filter functionality
+        $('#filterSearch').on('click', function() {
+            var table = $('.data-table').DataTable();
+            var publish = $('#filterPublish').val();
+            var from = $('#filterFrom').val();
+            var to = $('#filterTo').val();
+
+            table.ajax.url("{{ route('getAllPost') }}?status=" + publish + "&fromDate=" + from + "&toDate=" + to)
+                .load();
+        });
     </script>
 @endsection

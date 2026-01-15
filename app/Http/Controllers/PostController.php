@@ -17,12 +17,17 @@ class PostController extends Controller
             // $data = Post::all();
 
             // base query
-            $data = Post::query();
+            $data = Post::query()
+            ->when($r->has('status') && $r->status != '', function ($query) use ($r) {
+                $query->where('is_published', $r->status);
+            })
+            ->when($r->has('fromDate') && $r->fromDate != '', function ($query) use ($r) {
+                $query->whereDate('created_at', '>=', $r->fromDate);
+            })
+            ->when($r->has('toDate') && $r->toDate != '', function ($query) use ($r) {
+                $query->whereDate('created_at', '<=', $r->toDate);
+            });
 
-            // if NOT admin tjen it will show only published posts
-            if (!auth()->check() || auth()->user()->usertype !== 'admin') {
-                $data->where('is_published', 1);
-            }
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->editColumn('title', function ($post) {
@@ -62,11 +67,11 @@ class PostController extends Controller
                         ';
                 })
 
-                // ->editColumn('is_published', function ($post) {
-                //     return $post->is_published
-                //         ? '<span style="color:green; font-weight:bold;">Published</span>'
-                //         : '<span style="color:red; font-weight:bold;">Pending</span>';
-                // })
+                ->editColumn('is_published', function ($post) {
+                    return $post->is_published
+                        ? '<span style="color:green; font-weight:bold;">Published</span>'
+                        : '<span style="color:red; font-weight:bold;">Pending</span>';
+                })
 
                 ->editColumn('is_published', function ($post) {
                     $checked   = $post->is_published ? 'checked' : '';
@@ -75,33 +80,64 @@ class PostController extends Controller
                     $bg = $post->is_published ? 'blue' : '#ccc';
 
                     return '
-                    <label style="position:relative; display:inline-block; width:46px; height:24px; cursor:pointer;">
-                    <input type="checkbox"
-                    ' . $checked . '
-                    onchange="togglePublish(this, ' . $post->id . ')"
-                    style="opacity:0; width:0; height:0;">
-                    <span style="
-                    position:absolute;
-                    inset:0;
-                    background:' . $bg . ';
-                    border-radius:24px;
-                    transition:.3s;
-                    ">
-                    <span style="
-                    position:absolute;
-                    height:18px;
-                    width:18px;
-                    left:3px;
-                    bottom:3px;
-                    background:#fff;
-                    border-radius:50%;
-                    transition:.3s;
-                    transform: ' . $translate . ';
-                "></span>
-            </span>
-        </label>
-    ';
+                                <label style="position:relative; display:inline-block; width:46px; height:24px; cursor:pointer;">
+                                <input type="checkbox"
+                                ' . $checked . '
+                                onchange="togglePublish(this, ' . $post->id . ')"
+                                style="opacity:0; width:0; height:0;">
+                                <span style="
+                                position:absolute;
+                                inset:0;
+                                background:' . $bg . ';
+                                border-radius:24px;
+                                transition:.3s;
+                                ">
+                                <span style="
+                                position:absolute;
+                                height:18px;
+                                width:18px;
+                                left:3px;
+                                bottom:3px;
+                                background:#fff;
+                                border-radius:50%;
+                                transition:.3s;
+                                transform: ' . $translate . ';
+                            "></span>
+                        </span>
+                    </label>
+                ';
                 })
+
+                //             ->editColumn('is_published', function ($post) {
+                //                 $checked = $post->is_published ? 'checked' : '';
+                //                 $translate = $post->is_published ? 'translateX(22px)' : 'translateX(0)';
+
+                //                 return '
+                //     <label style="position:relative; display:inline-block; width:46px; height:24px; cursor:pointer;">
+                //         <input type="checkbox" ' . $checked . ' onchange="togglePublish(this, ' . $post->id . ')" style="opacity:0;width:0;height:0;">
+                //         <span style="
+                //             position:absolute;
+                //             inset:0;
+                //             background:' . $post->is_published ? 'blue' : '#ccc' . ';
+                //             border-radius:24px;
+                //             transition:.3s;
+                //         ">
+                //             <span style="
+                //                 position:absolute;
+                //                 height:18px;
+                //                 width:18px;
+                //                 left:3px;
+                //                 bottom:3px;
+                //                 background:#fff;
+                //                 border-radius:50%;
+                //                 transition:.3s;
+                //                 transform:' . $translate . ';
+                //             "></span>
+                //         </span>
+                //     </label>
+                // ';
+                //             })
+
                 ->rawColumns(['title', 'content', 'image', 'action', 'is_published',])
                 ->make(true);
 
